@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
 public class MoveSegment {
     public bool IsDone { get; private set; }
     public bool DirectionChanged { get { return points.Count == 3; } }

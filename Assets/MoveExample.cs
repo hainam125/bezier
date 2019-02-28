@@ -18,6 +18,7 @@ public class MoveExample : MonoBehaviour
         CreateSegments();
         isMoving = true;
         player.transform.position = pointList[0].position;
+        RotatePlayer(segments[0].Heading);
     }
 	
 	private void Update ()
@@ -29,12 +30,7 @@ public class MoveExample : MonoBehaviour
         var segment = segments[currentIdx];
         segment.Update(Time.deltaTime, speed);
         player.transform.position = segment.Pos;
-        if (segment.DirectionChanged)
-        {
-            Vector3 dir = segment.Heading;
-            float a = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            player.eulerAngles = new Vector3(0, 0, a);
-        }
+        if (segment.DirectionChanged) RotatePlayer(segment.Heading);
         if (segment.IsDone)
         {
             currentIdx++;
@@ -46,19 +42,31 @@ public class MoveExample : MonoBehaviour
             }
         }
     }
+
+    private void RotatePlayer(Vector3 dir)
+    {
+        float a = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        player.eulerAngles = new Vector3(0, 0, a);
+    }
+
     private void CreateSegments()
     {
+        bool addLast = true;
         var segment = new MoveSegment();
         segment.AddPoint(pointList[0].position);
         segments.Add(segment);
 
         for (int i = 1; i < pointList.Count - 2; i++)
         {
-            if((pointList[i].position.x == pointList[i + 2].position.x && pointList[i].position.x == pointList[i + 1].position.x) ||
+            var v1 = pointList[i + 2].position - pointList[i + 1].position;
+            var v2 = pointList[i + 2].position - pointList[i + 0].position;
+            var dot = Vector3.Dot(v1, new Vector3(v2.y, v2.x) );
+            if (Mathf.Approximately(0f, dot)) continue;
+            /*if((pointList[i].position.x == pointList[i + 2].position.x && pointList[i].position.x == pointList[i + 1].position.x) ||
                (pointList[i].position.y == pointList[i + 2].position.y && pointList[i].position.y == pointList[i + 1].position.y))
             {
                 continue;
-            }
+            }*/
             segment.AddPoint(pointList[i].position);
             segment.Calculate();
 
@@ -69,13 +77,22 @@ public class MoveExample : MonoBehaviour
             segment.Calculate();
             segments.Add(segment);
 
-            segment = new MoveSegment();
-            segment.AddPoint(pointList[i + 2].position);
-            segments.Add(segment);
-
+            if (i + 2 == pointList.Count - 1)
+            {
+                addLast = false;
+            }
+            else
+            {
+                segment = new MoveSegment();
+                segment.AddPoint(pointList[i + 2].position);
+                segments.Add(segment);
+            }
             i +=1;
         }
-        segment.AddPoint(pointList[pointList.Count - 1].position);
-        segment.Calculate();
+        if (addLast)
+        {
+            segment.AddPoint(pointList[pointList.Count - 1].position);
+            segment.Calculate();
+        }
     }
 }
