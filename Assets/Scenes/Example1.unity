@@ -316,8 +316,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 2100507307}
   speed: 5
-  map: {fileID: 1900877015}
-  segments: []
+  map: {fileID: 415366878}
 --- !u!4 &93037419
 Transform:
   m_ObjectHideFlags: 0
@@ -1368,7 +1367,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &415366878
 Transform:
   m_ObjectHideFlags: 0
@@ -5004,7 +5003,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1900877015
 Transform:
   m_ObjectHideFlags: 0
