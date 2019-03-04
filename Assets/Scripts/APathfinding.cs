@@ -41,12 +41,12 @@ public class APathfinding {
 					continue;
 				}
 
-                float newMovementCostToNeighbour = gCosts[currentNode.id] + currentNode.Distance(neighbour);
-                if (newMovementCostToNeighbour < gCosts[neighbour.id] || !openSet.Contains(neighbour))
+                float newMovementCostToNeighbour = gCosts[currentNode.Id] + currentNode.Distance(neighbour);
+                if (newMovementCostToNeighbour < gCosts[neighbour.Id] || !openSet.Contains(neighbour))
                 {
-                    gCosts[neighbour.id] = newMovementCostToNeighbour;
-                    hCosts[neighbour.id] = neighbour.Distance(targetNode);
-                    parents[neighbour.id] = currentNode;
+                    gCosts[neighbour.Id] = newMovementCostToNeighbour;
+                    hCosts[neighbour.Id] = neighbour.Distance(targetNode);
+                    parents[neighbour.Id] = currentNode;
 
                     if (!openSet.Contains(neighbour)) openSet.Add(neighbour);
                     else openSet.UpdateItem(neighbour);
@@ -58,12 +58,10 @@ public class APathfinding {
 
     public static List<Node> RetracePath(Node startNode, Node endNode) {
 		Node currentNode = endNode;
-        Node prevNode = endNode;
 
 		while (currentNode != startNode) {
             path.Add(currentNode);
-            prevNode = currentNode;
-            currentNode = parents[currentNode.id];
+            currentNode = parents[currentNode.Id];
         }
         path.Add(startNode);
 		path.Reverse();
@@ -71,10 +69,10 @@ public class APathfinding {
 	}
 
     private static int Compare(Node nodeA, Node nodeB) {
-        int compare = (gCosts[nodeA.id] + hCosts[nodeA.id]).CompareTo(gCosts[nodeB.id] + hCosts[nodeB.id]);
+        int compare = (gCosts[nodeA.Id] + hCosts[nodeA.Id]).CompareTo(gCosts[nodeB.Id] + hCosts[nodeB.Id]);
         if (compare == 0)
         {
-            compare = hCosts[nodeA.id].CompareTo(hCosts[nodeB.id]);
+            compare = hCosts[nodeA.Id].CompareTo(hCosts[nodeB.Id]);
         }
         return -compare;
     }

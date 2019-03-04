@@ -7,26 +7,47 @@ public class MoveExample3 : MonoBehaviour {
     public float speed = 5;
     public float curveDist = 1;
     public Transform map;
-    public Node startNode, endNode;
 
-    public List<MoveSegment> segments = new List<MoveSegment>();
+    private Road[] roads;
+    private Node startNode, endNode;
+    private Road startRoad, endRoad;
+
+    private List<MoveSegment> segments = new List<MoveSegment>();
     private int currentIdx;
     private bool isMoving;
-
+    
+    private void Awake()
+    {
+        Init();
+    }
 
     private void Start()
     {
-        APathfinding.Init(20);
-        Init();
+        FindPath();
     }
 
     private void Update()
     {
         if (isMoving) Move();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            FindPath();
+        }
     }
 
-    private void Init()
+    private void FindPath()
     {
+        segments.Clear();
+        currentIdx = 0;
+
+        startRoad = endRoad ?? roads[Random.Range(0, roads.Length)];
+        endRoad = startRoad;
+        while(startRoad == endRoad)
+        {
+            endRoad = roads[Random.Range(0, roads.Length)];
+        }
+        startNode = endNode ?? startRoad.nodes[Random.Range(0, 2)];
+        endNode = endRoad.nodes[Random.Range(0, 2)];
         var path = APathfinding.FindPath(startNode, endNode);
 
         List<Vector3> pointList = new List<Vector3>();
@@ -35,6 +56,19 @@ public class MoveExample3 : MonoBehaviour {
         isMoving = true;
         player.transform.position = pointList[0];
         RotatePlayer(segments[0].Heading);
+    }
+
+    private void Init()
+    {
+        APathfinding.Init(100);
+        roads = FindObjectsOfType<Road>();
+        var intersections = FindObjectsOfType<Intersection>();
+        foreach (var road in roads) road.FindNodes();
+        foreach (var i in intersections)
+        {
+            i.FindNodes();
+            i.ConnectNodes();
+        }
     }
 
     private void Move()
@@ -49,16 +83,17 @@ public class MoveExample3 : MonoBehaviour {
             segment.Reset();
             if (currentIdx == segments.Count)
             {
-                currentIdx = 0;
-                //isMoving = false;
+                isMoving = false;
+                FindPath();
             }
         }
     }
 
     private void RotatePlayer(Vector3 dir)
     {
-        float a = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        player.eulerAngles = new Vector3(0, 0, a);
+        //float a = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
+        //player.eulerAngles = new Vector3(0, a, 0);
+        player.rotation = Quaternion.LookRotation(dir);
     }
 
     private void CreateSegments(List<Vector3> pointList)

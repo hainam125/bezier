@@ -40,7 +40,7 @@ public class MoveSegment {
 
     private void Update2(float deltaTime, float speed)
     {
-        float dist = speed * Time.deltaTime;
+        float dist = speed * deltaTime;
         moved += dist;
         float t = moved / total;
         if (t >= 1)
@@ -53,7 +53,7 @@ public class MoveSegment {
 
     private void Update3(float deltaTime, float speed)
     {
-        float dist = speed * Time.deltaTime;
+        float dist = speed * deltaTime;
         moved += dist;
         float t = moved / total;
         if (t >= 1)

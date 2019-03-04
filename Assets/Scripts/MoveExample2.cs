@@ -9,7 +9,7 @@ public class MoveExample2 : MonoBehaviour
     public float curveDist = 1;
     public Transform map;
     
-    public List<MoveSegment> segments = new List<MoveSegment>();
+    private List<MoveSegment> segments = new List<MoveSegment>();
     private int currentIdx;
     private bool isMoving;
 

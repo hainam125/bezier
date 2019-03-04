@@ -21,7 +21,7 @@ public class Heap<T> where T : Node {
     }
 	
 	public void Add(T item) {
-        itemHeapIdx[item.id] = currentItemCount;
+        itemHeapIdx[item.Id] = currentItemCount;
 		items[currentItemCount] = item;
 		SortUp(item);
 		currentItemCount++;
@@ -31,7 +31,7 @@ public class Heap<T> where T : Node {
 		T firstItem = items[0];
 		currentItemCount--;
 		items[0] = items[currentItemCount];
-        itemHeapIdx[items[0].id] = 0;
+        itemHeapIdx[items[0].Id] = 0;
 		SortDown(items[0]);
 		return firstItem;
 	}
@@ -41,13 +41,13 @@ public class Heap<T> where T : Node {
 	}
 
 	public bool Contains(T item) {
-        return Equals(items[itemHeapIdx[item.id]], item);
+        return Equals(items[itemHeapIdx[item.Id]], item);
 	}
 
 	void SortDown(T item) {
 		while (true) {
-            int childIndexLeft = itemHeapIdx[item.id] * 2 + 1;
-            int childIndexRight = itemHeapIdx[item.id] * 2 + 2;
+            int childIndexLeft = itemHeapIdx[item.Id] * 2 + 1;
+            int childIndexRight = itemHeapIdx[item.Id] * 2 + 2;
             int swapIndex = 0;
 
 			if (childIndexLeft < currentItemCount) {
@@ -69,7 +69,7 @@ public class Heap<T> where T : Node {
 	}
 	
 	void SortUp(T item) {
-        int parentIndex = (itemHeapIdx[item.id] - 1) / 2;
+        int parentIndex = (itemHeapIdx[item.Id] - 1) / 2;
 
         while (true) {
 			T parentItem = items[parentIndex];
@@ -77,15 +77,15 @@ public class Heap<T> where T : Node {
             if (Compare(item, parentItem) > 0) Swap (item,parentItem);
 			else break;
             
-            parentIndex = (itemHeapIdx[item.id] - 1) / 2;
+            parentIndex = (itemHeapIdx[item.Id] - 1) / 2;
         }
 	}
 	
 	void Swap(T itemA, T itemB) {
-        items[itemHeapIdx[itemA.id]] = itemB;
-        items[itemHeapIdx[itemB.id]] = itemA;
-        int itemAIndex = itemHeapIdx[itemA.id];
-        itemHeapIdx[itemA.id] = itemHeapIdx[itemB.id];
-        itemHeapIdx[itemB.id] = itemAIndex;
+        items[itemHeapIdx[itemA.Id]] = itemB;
+        items[itemHeapIdx[itemB.Id]] = itemA;
+        int itemAIndex = itemHeapIdx[itemA.Id];
+        itemHeapIdx[itemA.Id] = itemHeapIdx[itemB.Id];
+        itemHeapIdx[itemB.Id] = itemAIndex;
     }
 }
