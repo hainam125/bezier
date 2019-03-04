@@ -1,26 +1,49 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PathManager : MonoBehaviour
 {
     private static PathManager instance;
-    /*public static PathManager Instance
-    {
-        get
-        {
-            if (instance == null) instance = Object.FindObjectOfType<PathManager>();
-            return instance;
-        }
-    }*/
+
+    private Queue<PathRequest> queue = new Queue<PathRequest>();
 
     private void Awake()
     {
+        instance = this;
         APathfinding.Init(100);
     }
 
-    public static List<Node> FindPath(Node startNode, Node endNode)
+    private void Update()
     {
-        return APathfinding.FindPath(startNode, endNode);
+        if(queue.Count > 0)
+        {
+            var request = queue.Dequeue();
+            request.Find();
+        }
+    }
+
+    public static void RequestPath(Node startNode, Node endNode, Action<List<Node>> callback)
+    {
+        instance.queue.Enqueue(new PathRequest(startNode, endNode, callback));
+    }
+}
+
+public class PathRequest
+{
+    private Node start, end;
+    private Action<List<Node>> callback;
+
+    public PathRequest(Node startNode, Node endNode, Action<List<Node>> cb)
+    {
+        start = startNode;
+        end = endNode;
+        callback = cb;
+    }
+
+    public void Find()
+    {
+        var r = APathfinding.FindPath(start, end);
+        callback.Invoke(r);
     }
 }
