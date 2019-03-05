@@ -17,7 +17,6 @@ public class Vehicle : MonoBehaviour {
     private List<MoveSegment> segments = new List<MoveSegment>();
     private int currentIdx;
     private bool isMoving;
-    public bool IsHalt { get; private set; }
 
     private void Awake()
     {
@@ -26,7 +25,7 @@ public class Vehicle : MonoBehaviour {
 
     public void UpdateGame(float deltaTime)
     {
-        if (isMoving && !IsHalt) Move(deltaTime);
+        if (isMoving) Move(deltaTime);
     }
 
     public void Init(Road[] roads)
@@ -46,8 +45,8 @@ public class Vehicle : MonoBehaviour {
         {
             endRoad = roads[Random.Range(0, roads.Length)];
         }
-        startNode = endNode ?? startRoad.nodes[Random.Range(0, 2)];
-        endNode = endRoad.nodes[Random.Range(0, 2)];
+        startNode = endNode ?? startRoad.nodes[Random.Range(0, startRoad.nodes.Length)];
+        endNode = endRoad.nodes[Random.Range(0, endRoad.nodes.Length)];
 
         System.Action<List<Node>> callback = path =>
         {

@@ -11,7 +11,7 @@ public class PathManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        APathfinding.Init(100);
+        APathfinding.Init(150);
     }
 
     private void Update()
