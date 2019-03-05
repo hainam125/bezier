@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 
-public class Road : MonoBehaviour {
-    [HideInInspector]
+public class Road {
     public Node[] nodes;
+    private Transform transform;
     public float GridX { get { return transform.position.x; } }
     public float GridY { get { return transform.position.z; } }
     public Vector2 Bound { get; private set; }
 
-    public void Init()
+    public Road(Transform transform)
     {
+        this.transform = transform;
         FindNodes();
         FindBound();
     }

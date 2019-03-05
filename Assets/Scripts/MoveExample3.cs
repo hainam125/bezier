@@ -5,6 +5,12 @@ public class MoveExample3 : MonoBehaviour
 {
     public const float CurveDistance = 4;
     public const float Scale = 4;
+
+    [SerializeField]
+    private Transform intersectionsTransform;
+    [SerializeField]
+    private Transform roadsTransform;
+
     private Vehicle[] vehicles;
     
     private void Start()
@@ -24,9 +30,18 @@ public class MoveExample3 : MonoBehaviour
     private void Init()
     {
         vehicles = FindObjectsOfType<Vehicle>();
-        var roads = FindObjectsOfType<Road>();
-        var intersections = FindObjectsOfType<Intersection>();
-        foreach (var road in roads) road.Init();
+        var roads = new Road[roadsTransform.childCount];
+        for(int i = 0; i < roads.Length; i++)
+        {
+            roads[i] = new Road(roadsTransform.GetChild(i));
+        }
+
+        var intersections = new Intersection[intersectionsTransform.childCount];
+        for (int i = 0; i < intersections.Length; i++)
+        {
+            intersections[i] = new Intersection(intersectionsTransform.GetChild(i));
+        }
+
         foreach (var i in intersections)
         {
             i.roads = new Road[4];
