@@ -1,8 +1,14 @@
 ﻿using UnityEngine;
 
-public class Intersection : MonoBehaviour {
+public class Intersection : MonoBehaviour
+{
+    [HideInInspector]
     public Node[] nodes;
+    [HideInInspector]
     public Road[] roads;
+
+    public float GridX { get { return transform.position.x; } }
+    public float GridY { get { return transform.position.z; } }
 
     public void ConnectNodes()
     {
