@@ -1,14 +1,20 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Vehicle : MonoBehaviour {
+public class Vehicle : MonoBehaviour
+{
+    [SerializeField]
+    private float speed = 5;
+    [HideInInspector]
+    public bool isHalt;
+
     private Transform mTransform;
     public Vector3 Pos {
         get { return mTransform.position; }
         set { mTransform.position = value; }
     }
-    
-    public float speed = 5;
+    public Vector3 Heading { get; private set; }
+    public bool IsTurning { get; private set; }
 
     private Road[] roads;
     private Node startNode, endNode;
@@ -25,7 +31,7 @@ public class Vehicle : MonoBehaviour {
 
     public void UpdateGame(float deltaTime)
     {
-        if (isMoving) Move(deltaTime);
+        if (isMoving && !isHalt) Move(deltaTime);
     }
 
     public void Init(Road[] roads)
@@ -37,7 +43,6 @@ public class Vehicle : MonoBehaviour {
     private void FindPath()
     {
         segments.Clear();
-        currentIdx = 0;
 
         startRoad = endRoad ?? roads[Random.Range(0, roads.Length)];
         endRoad = startRoad;
@@ -50,11 +55,13 @@ public class Vehicle : MonoBehaviour {
 
         System.Action<List<Node>> callback = path =>
         {
+            currentIdx = 0;
             List<Vector3> pointList = new List<Vector3>();
             for (int i = 0; i < path.Count; i++) pointList.Add(path[i].Pos);
             CreateSegments(pointList);
             isMoving = true;
-            RotateTo(segments[0].Heading);
+            RotateTo(segments[currentIdx].Heading);
+            CheckTurnDirection();
         };
 
         PathManager.RequestPath(startNode, endNode, callback);
@@ -75,14 +82,22 @@ public class Vehicle : MonoBehaviour {
                 isMoving = false;
                 FindPath();
             }
+            else
+            {
+                CheckTurnDirection();
+            }
         }
+    }
+
+    private void CheckTurnDirection()
+    {
+        IsTurning = segments[currentIdx].DirectionChanged;
     }
 
     private void RotateTo(Vector3 dir)
     {
-        //float a = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
-        //player.eulerAngles = new Vector3(0, a, 0);
-        mTransform.rotation = Quaternion.LookRotation(dir);
+        Heading = dir;
+        mTransform.rotation = Quaternion.LookRotation(Heading);
     }
 
     private void CreateSegments(List<Vector3> pointList)
@@ -149,4 +164,5 @@ public class Vehicle : MonoBehaviour {
         segment.AddPoint(pointList[pointList.Count - 1]);
         segment.Calculate();
     }
+
 }

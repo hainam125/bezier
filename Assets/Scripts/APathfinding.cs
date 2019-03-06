@@ -36,7 +36,7 @@ public class APathfinding {
 				return RetracePath(startNode,targetNode);
 			}
 
-			foreach (Node neighbour in currentNode.neighbours) {
+			foreach (Node neighbour in currentNode.Neighbours) {
 				if (closedSet.Contains(neighbour)) {
 					continue;
 				}

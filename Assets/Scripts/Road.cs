@@ -21,7 +21,7 @@ public class Road {
         nodes = new Node[n];
         for(int i = 0; i < n; i++)
         {
-            nodes[i] = nodesTransform.GetChild(i).GetComponent<Node>();
+            nodes[i] = new Node(nodesTransform.GetChild(i));
         }
     }
 

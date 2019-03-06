@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveExample3 : MonoBehaviour
@@ -12,6 +13,8 @@ public class MoveExample3 : MonoBehaviour
     private Transform roadsTransform;
 
     private Vehicle[] vehicles;
+    private Intersection[] intersections;
+    private Dictionary<Intersection, IntersectionInfo> toIntersection;
     
     private void Start()
     {
@@ -21,9 +24,53 @@ public class MoveExample3 : MonoBehaviour
     private void Update()
     {
         float deltaTime = Time.deltaTime;
-        for(int i = 0; i < vehicles.Length; i++)
+        CheckInvicity();
+        for (int i = 0; i < vehicles.Length; i++)
         {
             vehicles[i].UpdateGame(deltaTime);
+        }
+    }
+
+    private void CheckInvicity()
+    {
+        for (int i = 0; i < intersections.Length; i++)
+        {
+            var intersection = intersections[i];
+            var intersectionInfo = toIntersection[intersection];
+            intersectionInfo.vehicles.Clear();
+            intersectionInfo.isOccupied = false;
+            for (int v = 0; v < vehicles.Length; v++)
+            {
+                var vehicle = vehicles[v];
+                var to = intersection.Pos - vehicle.Pos;
+                var sqrDist = Vector3.SqrMagnitude(to);
+                var isNear = sqrDist < Scale * Scale * 1.25f;
+                var isAway = Vector3.Dot(to, vehicle.Heading) < 0;
+                if (sqrDist <= Scale * Scale * 0.5f)
+                {
+                    vehicle.isHalt = false;
+                    intersectionInfo.isOccupied = true;
+                }
+                else if (isNear && !isAway)
+                {
+                    intersectionInfo.vehicles.Add(vehicle);
+                }
+            }
+            
+            if (intersectionInfo.isOccupied)
+            {
+                for (int v = 0; v < intersectionInfo.vehicles.Count; v++)
+                {
+                    intersectionInfo.vehicles[v].isHalt = true;
+                }
+            }
+            else
+            {
+                for (int v = 0; v < intersectionInfo.vehicles.Count; v++)
+                {
+                    intersectionInfo.vehicles[v].isHalt = v != 0;
+                }
+            }
         }
     }
 
@@ -36,10 +83,12 @@ public class MoveExample3 : MonoBehaviour
             roads[i] = new Road(roadsTransform.GetChild(i));
         }
 
-        var intersections = new Intersection[intersectionsTransform.childCount];
+        toIntersection = new Dictionary<Intersection, IntersectionInfo>();
+        intersections = new Intersection[intersectionsTransform.childCount];
         for (int i = 0; i < intersections.Length; i++)
         {
             intersections[i] = new Intersection(intersectionsTransform.GetChild(i));
+            toIntersection[intersections[i]] = new IntersectionInfo();
         }
 
         foreach (var i in intersections)
@@ -64,4 +113,10 @@ public class MoveExample3 : MonoBehaviour
         }
         foreach (var vehicle in vehicles) vehicle.Init(roads);
     }
+}
+
+public class IntersectionInfo
+{
+    public List<Vehicle> vehicles = new List<Vehicle>();
+    public bool isOccupied;
 }

@@ -1,26 +1,27 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Node : MonoBehaviour
+public class Node
 {
     private static int currentId = 1;
     public int Id { get; private set; }
-    public List<Node> neighbours;
+    public List<Node> Neighbours { get; private set; }
 
-    private Transform mTranform;
-    public Vector3 Pos { get { return mTranform.position; } }
+    private Transform mTransform;
+    public Vector3 Pos { get { return mTransform.position; } }
     public float GridX { get { return Pos.x; } }
     public float GridY { get { return Pos.z; } }
 
-    private void Awake () {
-        mTranform = transform;
+    public Node(Transform transform) {
+        mTransform = transform;
+        Neighbours = new List<Node>();
         Id = currentId;
         currentId++;
     }
 
     public void AddNeighbour(Node node)
     {
-        neighbours.Add(node);
+        Neighbours.Add(node);
     }
 
     public float Distance(Node other)

@@ -4,7 +4,8 @@ public class Intersection
 {
     public Node[] nodes;
     public Road[] roads;
-    private Transform transform;
+    public Transform transform;
+    public Vector3 Pos { get { return transform.position; } }
     public float GridX { get { return transform.position.x; } }
     public float GridY { get { return transform.position.z; } }
 
@@ -89,7 +90,7 @@ public class Intersection
         nodes = new Node[n];
         for (int i = 0; i < n; i++)
         {
-            nodes[i] = nodesTransform.GetChild(i).GetComponent<Node>();
+            nodes[i] = new Node(nodesTransform.GetChild(i));
         }
     }
 }
